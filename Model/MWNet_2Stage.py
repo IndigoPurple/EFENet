@@ -122,6 +122,6 @@ class MWNet_2Stage_3(nn.Module):
 if __name__ == '__main__':
     net = MWNet_2Stage().state_dict()
     for k,v in net.items():
-        print k
+        print(k)
 
 

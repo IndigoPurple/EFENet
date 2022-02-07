@@ -3,7 +3,8 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import cPickle as pickle
+# import cPickle as pickle
+import pickle
 import os
 
 class SiftExtractor(object):

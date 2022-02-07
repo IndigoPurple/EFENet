@@ -42,7 +42,7 @@ class Backward_warp(nn.Module):
  
         dim1 = width * height
         dim2 = width
-        base = torch.tensor((torch.arange(num_batch) * dim1),dtype = torch.int64)
+        base = torch.tensor((torch.arange(num_batch) * dim1),dtype = torch.int64).cuda()
         base = base.reshape(num_batch,1).repeat(1,out_height * out_width).view(-1)
 
         base_y0 = base + y0 * dim2

@@ -11,7 +11,7 @@ import cv2
 class VimeoDataset(Dataset):
     ''' Vimeo Dataset '''
 
-    def __init__(self, data_path_corrupted, data_path_clean, data_path_MDSR, data_list_file, frame_num=7,
+    def __init__(self, data_path_corrupted, data_path_clean, data_path_sisr, data_list_file, frame_num=7,
                  transform=None, is_train=True, require_seqid=False):
         # assert frame_window_size%2==1, "frame_window_size should be odd"
         ## file list
@@ -19,7 +19,7 @@ class VimeoDataset(Dataset):
         self.folder_list_corrupted = self.get_list(data_path_corrupted)
         # self.frame_num_list = self.get_list(data_path_corrupted)
         self.folder_list_clean = self.get_list(data_path_clean)
-        self.folder_list_MDSR = self.get_list(data_path_MDSR)
+        self.folder_list_sisr = self.get_list(data_path_sisr)
         self.file_list = ['im' + str(i) + '.png' for i in range(1, frame_num+1)]
         # transform
         self.transform = transform
@@ -57,7 +57,7 @@ class VimeoDataset(Dataset):
         elif mode == 'LR':
             filename = self.folder_list_corrupted[m] + self.file_list[f]
         elif mode == 'SR':
-            filename = self.folder_list_MDSR[m] + self.file_list[f]
+            filename = self.folder_list_sisr[m] + self.file_list[f]
         image = Image.open(filename)
         return image
 
@@ -82,7 +82,7 @@ class VimeoDataset(Dataset):
         elif mode == 'SR':
             images_list = tuple()
             for f in self.file_list:
-                filename = self.folder_list_MDSR[m] + f
+                filename = self.folder_list_sisr[m] + f
                 image = cv2.imread(filename)
                 images = np.concatenate(images_list, axis=2)
             images = np.concatenate(images_list, axis=2)
@@ -115,7 +115,7 @@ class VimeoDataset(Dataset):
             sample['input_img1_SR'] = self.transform(sample['input_img1_SR'])
 
         sample['input_img2_HR'] = self.get_frame(m, self.frame_num-1, mode='HR')
-        if self.transform:/media/zyp/ZYP/ubuntu/workplace/svr/SpaceStation/mutiscale_warping_train_yaping/crossnetdir = ''
+        if self.transform:
             sample['input_img2_HR'] = self.transform(sample['input_img2_HR'])
         sample['input_LR'] = self.get_all_frames(m, mode='LR')
         if self.transform:
@@ -132,14 +132,14 @@ class VimeoDataset(Dataset):
 
 if __name__ == "__main__":
     data_path_corrupted = '/fileserver/haitian/Fall2018_Multi_warp/dataset/vimeo_septuplet/sequences_noise/'
-    data_path_MDSR = '/fileserver/haitian/Fall2018_Multi_warp/dataset/vimeo_septuplet/sequences_upsampled_MDSR/'
+    data_path_sisr = '/fileserver/haitian/Fall2018_Multi_warp/dataset/vimeo_septuplet/sequences_upsampled_sisr/'
     data_path_clean = '/fileserver/haitian/Fall2018_Multi_warp/dataset/vimeo_septuplet/sequences/'
     data_list_file = '/fileserver/haitian/Fall2018_Multi_warp/dataset/vimeo_septuplet/sep_trainlist.txt'
     # composed = transforms.Compose([transforms.RandomCrop((128,128)),
     #                                 transforms.ToTensor()])
 
     composed = transforms.Compose([transforms.ToTensor()])
-    dataset = VimeoDataset(data_path_corrupted, data_path_clean, data_path_MDSR, data_list_file, frame_window_size=2,
+    dataset = VimeoDataset(data_path_corrupted, data_path_clean, data_path_sisr, data_list_file, frame_window_size=2,
                            transform=composed)
 
     #### test pytorch dataset

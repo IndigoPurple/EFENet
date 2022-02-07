@@ -240,62 +240,61 @@ class MultiscaleWarpingNet5(nn.Module):
 
 
 #shared crossnet for two-stage 
-class MultiscaleWarpingNet6(nn.Module):
-
-    def __init__(self):
-        super(MultiscaleWarpingNet6, self).__init__()
-        self.FlowNet = FlowNet(6)
-        self.Backward_warp = Backward_warp()
-        self.Encoder = Encoder(3)
-        self.UNet_decoder_2 = UNet_decoder_2()
-
-    def forward(self, buff,mode = 'input_img2_HR'):
-
-        input_img1_LR = torch.from_numpy(buff['input_img1_LR']).cuda()
-        input_img1_HR = torch.from_numpy(buff['input_img1_HR']).cuda()
-        input_img1_SR = torch.from_numpy(buff['input_img1_SR']).cuda()
-
-        # input_img2_LR = torch.from_numpy(buff['input_img2_LR']).cuda()
-        input_img2_HR = torch.from_numpy(buff['input_img2_HR']).cuda()
-        # input_img2_SR = torch.from_numpy(buff['input_img2_SR']).cuda()
-        if mode == 'input_img2_LR':
-            input_img2_LR = torch.from_numpy(buff['input_img2_LR']).cuda()
-            flow_s1 = self.FlowNet(input_img1_LR, input_img2_LR)
-        elif mode == 'input_img2_HR':
-            flow_s1 = self.FlowNet(input_img1_LR, input_img2_HR)
-        elif mode == 'input_img1_HR':
-            flow_s1 = self.FlowNet(input_img1_HR, input_img2_HR)
-
-        SR_conv1, SR_conv2, SR_conv3, SR_conv4 = self.Encoder(input_img1_SR)
-        HR2_conv1, HR2_conv2, HR2_conv3, HR2_conv4 = self.Encoder(input_img2_HR)
-
-        flow_s1_12_1 = flow_s1['flow_12_1']
-        flow_s1_12_2 = flow_s1['flow_12_2']
-        flow_s1_12_3 = flow_s1['flow_12_3']
-        flow_s1_12_4 = flow_s1['flow_12_4']
-
-        warp_s1_21_conv1 = self.Backward_warp(HR2_conv1, flow_s1_12_1)
-        warp_s1_21_conv2 = self.Backward_warp(HR2_conv2, flow_s1_12_2)
-        warp_s1_21_conv3 = self.Backward_warp(HR2_conv3, flow_s1_12_3)
-        warp_s1_21_conv4 = self.Backward_warp(HR2_conv4, flow_s1_12_4)
-
-        refSR_1 = self.UNet_decoder_2(SR_conv1, SR_conv2, SR_conv3, SR_conv4, warp_s1_21_conv1,warp_s1_21_conv2, warp_s1_21_conv3,warp_s1_21_conv4)
-
-        flow_s2 = self.FlowNet(refSR_1, input_img2_HR)
-        flow_s2_12_1 = flow_s2['flow_12_1']
-        flow_s2_12_2 = flow_s2['flow_12_2']
-        flow_s2_12_3 = flow_s2['flow_12_3']
-        flow_s2_12_4 = flow_s2['flow_12_4']
-
-        warp_s2_21_conv1 = self.Backward_warp(HR2_conv1, flow_s2_12_1)
-        warp_s2_21_conv2 = self.Backward_warp(HR2_conv2, flow_s2_12_2)
-        warp_s2_21_conv3 = self.Backward_warp(HR2_conv3, flow_s2_12_3)
-        warp_s2_21_conv4 = self.Backward_warp(HR2_conv4, flow_s2_12_4)
-	refSR_2 = self.UNet_decoder_2(SR_conv1, SR_conv2, SR_conv3, SR_conv4, warp_s2_21_conv1,warp_s2_21_conv2, warp_s2_21_conv3,warp_s2_21_conv4)
-
-
-
-        return refSR_1,refSR_2
+# class MultiscaleWarpingNet6(nn.Module):
+#     def __init__(self):
+#         super(MultiscaleWarpingNet6, self).__init__()
+#         self.FlowNet = FlowNet(6)
+#         self.Backward_warp = Backward_warp()
+#         self.Encoder = Encoder(3)
+#         self.UNet_decoder_2 = UNet_decoder_2()
+#
+#     def forward(self, buff,mode = 'input_img2_HR'):
+#
+#         input_img1_LR = torch.from_numpy(buff['input_img1_LR']).cuda()
+#         input_img1_HR = torch.from_numpy(buff['input_img1_HR']).cuda()
+#         input_img1_SR = torch.from_numpy(buff['input_img1_SR']).cuda()
+#
+#         # input_img2_LR = torch.from_numpy(buff['input_img2_LR']).cuda()
+#         input_img2_HR = torch.from_numpy(buff['input_img2_HR']).cuda()
+#         # input_img2_SR = torch.from_numpy(buff['input_img2_SR']).cuda()
+#         if mode == 'input_img2_LR':
+#             input_img2_LR = torch.from_numpy(buff['input_img2_LR']).cuda()
+#             flow_s1 = self.FlowNet(input_img1_LR, input_img2_LR)
+#         elif mode == 'input_img2_HR':
+#             flow_s1 = self.FlowNet(input_img1_LR, input_img2_HR)
+#         elif mode == 'input_img1_HR':
+#             flow_s1 = self.FlowNet(input_img1_HR, input_img2_HR)
+#
+#         SR_conv1, SR_conv2, SR_conv3, SR_conv4 = self.Encoder(input_img1_SR)
+#         HR2_conv1, HR2_conv2, HR2_conv3, HR2_conv4 = self.Encoder(input_img2_HR)
+#
+#         flow_s1_12_1 = flow_s1['flow_12_1']
+#         flow_s1_12_2 = flow_s1['flow_12_2']
+#         flow_s1_12_3 = flow_s1['flow_12_3']
+#         flow_s1_12_4 = flow_s1['flow_12_4']
+#
+#         warp_s1_21_conv1 = self.Backward_warp(HR2_conv1, flow_s1_12_1)
+#         warp_s1_21_conv2 = self.Backward_warp(HR2_conv2, flow_s1_12_2)
+#         warp_s1_21_conv3 = self.Backward_warp(HR2_conv3, flow_s1_12_3)
+#         warp_s1_21_conv4 = self.Backward_warp(HR2_conv4, flow_s1_12_4)
+#
+#         refSR_1 = self.UNet_decoder_2(SR_conv1, SR_conv2, SR_conv3, SR_conv4, warp_s1_21_conv1,warp_s1_21_conv2, warp_s1_21_conv3,warp_s1_21_conv4)
+#
+#         flow_s2 = self.FlowNet(refSR_1, input_img2_HR)
+#         flow_s2_12_1 = flow_s2['flow_12_1']
+#         flow_s2_12_2 = flow_s2['flow_12_2']
+#         flow_s2_12_3 = flow_s2['flow_12_3']
+#         flow_s2_12_4 = flow_s2['flow_12_4']
+#
+#         warp_s2_21_conv1 = self.Backward_warp(HR2_conv1, flow_s2_12_1)
+#         warp_s2_21_conv2 = self.Backward_warp(HR2_conv2, flow_s2_12_2)
+#         warp_s2_21_conv3 = self.Backward_warp(HR2_conv3, flow_s2_12_3)
+#         warp_s2_21_conv4 = self.Backward_warp(HR2_conv4, flow_s2_12_4)
+# 	refSR_2 = self.UNet_decoder_2(SR_conv1, SR_conv2, SR_conv3, SR_conv4, warp_s2_21_conv1,warp_s2_21_conv2, warp_s2_21_conv3,warp_s2_21_conv4)
+#
+#
+#
+#         return refSR_1,refSR_2
 
 #shared encoder+decoder but independent flownet
 class MultiscaleWarpingNet7(nn.Module):
@@ -1039,7 +1038,7 @@ class Crossnetpp_MultiflowFusion5(nn.Module):
         self.Flow_Encoder = Encoder(14)   # 14 = 2*7
         self.Flow_UNet_decoder = UNet_decoder_3(out_channel=2)
 
-    def forward(self, buff, flow_visible=False, require_flow=False, frame_num=30):
+    def forward(self, buff, flow_visible=False, require_flow=False, frame_num=7): # frame_num=30 for MPII dataset
         input_LR = buff['input_LR'].cuda()
         input_img1_LR = buff['input_img1_LR'].cuda()
         input_img1_SR = input_img1_LR

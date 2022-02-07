@@ -1,8 +1,5 @@
-#!/bin/bash
-
-#block(name=exp18_test, threads=5, memory=5000, subtasks=1, gpu=true, hours=100)
-python -u train_efenet_vimeo.py  \
---dataset Vimeo   \
+python train_efenet_vimeo.py  \
+--dataset demo   \
 --mode test \
 --display 100 \
 --batch_size 1  \
@@ -11,16 +8,12 @@ python -u train_efenet_vimeo.py  \
 --loss CharbonnierLoss \
 --optim Adam \
 --lr 0.00001  \
---checkpoints_dir ./checkpoints_exp18_test/ \
+--checkpoints_dir ./checkpoints/ \
 --frame_num 7 \
---checkpoint_file ./checkpoints_exp18/CP235000.pth \
---with_GAN_loss 1 \
---img_save_path result/exp18_test \
+--checkpoint_file ./pretrained/CP10000.pth \
+--with_GAN_loss 0 \
+--img_save_path result/ \
 --net_type multiflowfusion5 \
 --pretrained 0 \
 --gpu_id 0
-    echo "Done" 
-
-# if you want to schedule multiple gpu jobs on a server, better to use this tool.
-# run: `bash ./qsub-SurfaceNet_inference.sh`
-# for installation & usage, please refer to the author's github: https://github.com/alexanderrichard/queueing-tool
+    echo "Done"

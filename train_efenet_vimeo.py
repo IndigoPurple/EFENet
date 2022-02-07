@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 from torch import optim
 import time
-import cPickle as pickle
+# import cPickle as pickle
 import math
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
@@ -67,27 +67,27 @@ def save_img(buff, warp_img2_HR, fine_img1_SR, warp_HR, file_dir):
     if not os.path.exists(file_dir):
         os.makedirs(file_dir)
 
-    keys = buff.keys()
-    for key in keys:
-        if key == 'input_LR' or key == 'input_HR':
-            for i in range(frame_num):
-                temp = buff[key][:, i * 3: (i+1) * 3, :, :]
-                img = Image.fromarray(
-                    np.array(temp.numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
-                img.save(file_dir + key + '_%04d.png' % i)
-            continue
-        img = Image.fromarray(np.array(buff[key].numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
-        img.save(file_dir + key + '.png')
-    for i in range(frame_num):
-        temp = warp_HR[:, i * 3: (i + 1) * 3, :, :]
-        # print(temp.shape)
-        img = Image.fromarray(
-            np.array(temp.cpu().numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
-        img.save(file_dir + 'warp_HR_%04d.png' % i)
+    # keys = buff.keys()
+    # for key in keys:
+    #     if key == 'input_LR' or key == 'input_HR':
+    #         for i in range(frame_num):
+    #             temp = buff[key][:, i * 3: (i+1) * 3, :, :]
+    #             img = Image.fromarray(
+    #                 np.array(temp.numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
+    #             img.save(file_dir + key + '_%04d.png' % i)
+    #         continue
+    #     img = Image.fromarray(np.array(buff[key].numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
+    #     img.save(file_dir + key + '.png')
+    # for i in range(frame_num):
+    #     temp = warp_HR[:, i * 3: (i + 1) * 3, :, :]
+    #     # print(temp.shape)
+    #     img = Image.fromarray(
+    #         np.array(temp.cpu().numpy()[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
+    #     img.save(file_dir + 'warp_HR_%04d.png' % i)
 
-    warp_img2_HR = np.clip(warp_img2_HR.cpu().numpy(), 0.0, 1.0)
-    img = Image.fromarray(np.array(warp_img2_HR[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
-    img.save(file_dir + 'warp_img2_HR.png')
+    # warp_img2_HR = np.clip(warp_img2_HR.cpu().numpy(), 0.0, 1.0)
+    # img = Image.fromarray(np.array(warp_img2_HR[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
+    # img.save(file_dir + 'warp_img2_HR.png')
     sr_img = np.clip(fine_img1_SR.cpu().numpy(), 0.0, 1.0)
     img = Image.fromarray(np.array(sr_img[0].transpose(1, 2, 0) * 255, dtype=np.uint8))
     img.save(file_dir + 'sr.png')
@@ -108,7 +108,8 @@ def eval(net, testloader, len_testset, config, iter_count = 0):
         label_img = buff['input_img1_HR'].numpy()
         with torch.no_grad():
             # if config['net_type'] == 'multiflow' or config['net_type'] == 'multiflowfusion'
-            warp_img2_HR, fine_img1_SR, warp_HR = net(buff, vimeo=True, require_flow=False)
+            warp_img2_HR, fine_img1_SR, warp_HR = net(buff, require_flow=False)
+            # warp_img2_HR, fine_img1_SR, warp_HR = net(buff, vimeo=True, require_flow=False)
             # warp_img2_HR, fine_img1_SR = net(buff, vimeo=True, require_flow=False)
             save_img(buff, warp_img2_HR, fine_img1_SR, warp_HR, './%s/%04d/%s/' % (config['img_save_path'], iter_count, seqid[0].strip().split('/')[-2]))
             fine_img1_SR = fine_img1_SR.cpu().numpy()
@@ -183,7 +184,8 @@ def train_net(net, gpu=False, config={}):
                 label_img = label_img.cuda()
             # print (label_img.size())
 
-            warp_img2_HR, fine_img1_SR, warp_HR = net(buff, vimeo=True, require_flow=False)
+            warp_img2_HR, fine_img1_SR, warp_HR = net(buff, require_flow=False)
+            # warp_img2_HR, fine_img1_SR, warp_HR = net(buff, vimeo=True, require_flow=False)
 
             # flow_label = gen_flow_label(sift_extractor, buff, flow_s1_12_1)
             # if gpu:
@@ -225,14 +227,15 @@ def train_net(net, gpu=False, config={}):
 
             else:
 
-                prediction_fake = discriminator(fine_img1_SR)
-                logits1 = Variable(torch.zeros(prediction_fake.size()).cuda(), requires_grad=False)
-
-                loss_g = criterionBCE(prediction_fake, logits1)
-                loss_g_display = loss_g.item()
-                w_gan = 0.0001
-                # print
-                loss = config['w1'] * loss_1 + config['w2'] * loss_3 + config['w3'] * loss_4 + w_gan * loss_g
+                # prediction_fake = discriminator(fine_img1_SR)
+                # logits1 = Variable(torch.zeros(prediction_fake.size()).cuda(), requires_grad=False)
+                #
+                # loss_g = criterionBCE(prediction_fake, logits1)
+                # loss_g_display = loss_g.item()
+                # w_gan = 0.0001
+                # # print
+                # loss = config['w1'] * loss_1 + config['w2'] * loss_3 + config['w3'] * loss_4 + w_gan * loss_g
+                loss = config['w1'] * loss_1 + config['w2'] * loss_3 + config['w3'] * loss_4
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
@@ -265,9 +268,13 @@ def train_net(net, gpu=False, config={}):
 
                 loss_count = loss_count / config['display']
                 print(
-                    'iter:%d    time: %.2fs / %diters  lr: %.8f  LossR: %.3f %.3f %.3f LossGAN: %.3f %.3f psnr: %.2f' % (
-                    iter_count + 1, time_cost, config['display'], config['lr'], loss_count[0], loss_count[1],
-                    loss_count[2], loss_d, loss_g, psnr_2))
+                    'iter:%d    time: %.2fs / %diters  lr: %.8f  LossR: %.3f %.3f %.3f  psnr: %.2f' % (
+                        iter_count + 1, time_cost, config['display'], config['lr'], loss_count[0], loss_count[1],
+                        loss_count[2], psnr_2))
+                # print(
+                #     'iter:%d    time: %.2fs / %diters  lr: %.8f  LossR: %.3f %.3f %.3f LossGAN: %.3f %.3f psnr: %.2f' % (
+                #     iter_count + 1, time_cost, config['display'], config['lr'], loss_count[0], loss_count[1],
+                #     loss_count[2], loss_d, loss_g, psnr_2))
 
                 loss_count[:] = 0
                 time_start = time.time()
@@ -372,6 +379,20 @@ if __name__ == '__main__':
     dataset_name = args.dataset
     scale = args.scale
     frame_num = args.frame_num
+
+    if dataset_name == 'demo':
+        data_path_corrupted = './dataset/corrupted/'
+        data_path_SISR = './dataset/SISR/'
+        data_path_clean = './dataset/clean/'
+        train_list_file = './dataset/trainlist.txt'
+        test_list_file = './dataset/testlist.txt'
+        # composed = transforms.Compose([transforms.RandomCrop((128,128)),transforms.ToTensor()])
+        composed = transforms.Compose([transforms.ToTensor()])
+        dataset_train = VimeoDataset(data_path_corrupted, data_path_clean, data_path_SISR, train_list_file,
+                                     frame_num=frame_num, transform=composed)
+        dataset_test = VimeoDataset(data_path_corrupted, data_path_clean, data_path_SISR, test_list_file,
+                                    frame_num=frame_num, transform=composed, is_train=False,
+                                    require_seqid=True)
 
     if dataset_name == 'Vimeo':
         data_path_corrupted = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/sequences_blur/'
