@@ -395,11 +395,11 @@ if __name__ == '__main__':
                                     require_seqid=True)
 
     if dataset_name == 'Vimeo':
-        data_path_corrupted = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/sequences_blur/'
-        data_path_MDSR = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/sequences_upsampled_MDSR/'
-        data_path_clean = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/sequences/'
-        train_list_file = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/sep_trainlist.txt'
-        test_list_file = '../../../../fileserver/haitian/Warp_layer/vimeo_septuplet/' + args.test_file
+        data_path_corrupted = './dataset/vimeo_septuplet/sequences_blur/'
+        data_path_MDSR = './dataset/vimeo_septuplet/sequences_upsampled_MDSR/'
+        data_path_clean = './dataset/vimeo_septuplet/sequences/'
+        train_list_file = './dataset/vimeo_septuplet/sep_trainlist.txt'
+        test_list_file = './dataset/vimeo_septuplet/' + args.test_file
         # composed = transforms.Compose([transforms.RandomCrop((128,128)),transforms.ToTensor()])
         composed = transforms.Compose([transforms.ToTensor()])
         dataset_train = VimeoDataset(data_path_corrupted, data_path_clean, data_path_MDSR, train_list_file,
@@ -409,29 +409,29 @@ if __name__ == '__main__':
                                     require_seqid=True)
 
     if dataset_name == 'MPII':
-        data_path_corrupted = '../../../../fileserver/yaping/data/crossnet/MPII_1_640_448/LR_4x/'
-        data_path_MDSR = '../../../../fileserver/yaping/data/crossnet/MPII_1_640_448/LR_4x/'
-        data_path_clean = '../../../../fileserver/yaping/data/crossnet/MPII_1_640_448/HR/'
-        train_list_file = '../../../../fileserver/yaping/data/crossnet/MPII_1_640_448/MPII_1_640_448.txt'
-        test_list_file = '../../../../fileserver/yaping/data/crossnet/MPII_1_640_448/MPII_1_640_448.txt'
+        data_path_corrupted = './dataset/MPII_1_640_448/LR_4x/'
+        data_path_MDSR = './dataset/MPII_1_640_448/LR_4x/'
+        data_path_clean = './dataset/MPII_1_640_448/HR/'
+        train_list_file = './dataset/MPII_1_640_448/MPII_1_640_448.txt'
+        test_list_file = './dataset/MPII_1_640_448/MPII_1_640_448.txt'
         # composed = transforms.Compose([transforms.RandomCrop((128,128)),transforms.ToTensor()])
         composed = transforms.Compose([transforms.ToTensor()])
         dataset_train = MpiiDataset(data_path_corrupted, data_path_clean, data_path_MDSR, train_list_file,
                                     frame_num=frame_num, transform=composed)
 
-        test_path_corrupted = '../../../../fileserver/yaping/data/crossnet/MPII_2_640_448/LR_4x/'
-        test_path_MDSR = '../../../../fileserver/yaping/data/crossnet/MPII_2_640_448/LR_4x/'
-        test_path_clean = '../../../../fileserver/yaping/data/crossnet/MPII_2_640_448/HR/'
-        test_list_file = '../../../../fileserver/yaping/data/crossnet/MPII_2_640_448/MPII_2_640_448.txt'
+        test_path_corrupted = './dataset/MPII_2_640_448/LR_4x/'
+        test_path_MDSR = './dataset/MPII_2_640_448/LR_4x/'
+        test_path_clean = './dataset/crossnet/MPII_2_640_448/HR/'
+        test_list_file = './dataset/MPII_2_640_448/MPII_2_640_448.txt'
         dataset_test = MpiiDataset(test_path_corrupted, test_path_clean, test_path_MDSR, test_list_file,
                                    frame_num=frame_num, transform=composed, is_train=True, require_seqid=True)
 
     if dataset_name == 'DAVIS':
         dataset_train = None
-        test_path_corrupted = '/fileserver/tanyang/projects/ref_sr_ytan/dataset/MPII_from_yaping/DAVIS_2017_and_2019_rigid/LR_4x/'
-        test_path_MDSR = '/fileserver/tanyang/projects/ref_sr_ytan/dataset/MPII_from_yaping/DAVIS_2017_and_2019_rigid/LR_4x/'
-        test_path_clean = '/fileserver/tanyang/projects/ref_sr_ytan/dataset/MPII_from_yaping/DAVIS_2017_and_2019_rigid/HR/'
-        test_list_file = '/fileserver/tanyang/projects/ref_sr_ytan/dataset/MPII_from_yaping/DAVIS_2017_and_2019_rigid/DAVIS_rigid.txt'
+        test_path_corrupted = './dataset/DAVIS_2017_and_2019_rigid/LR_4x/'
+        test_path_MDSR = './dataset/DAVIS_2017_and_2019_rigid/LR_4x/'
+        test_path_clean = './dataset/DAVIS_2017_and_2019_rigid/HR/'
+        test_list_file = './dataset/DAVIS_2017_and_2019_rigid/DAVIS_rigid.txt'
         composed = transforms.Compose([transforms.ToTensor()])
         dataset_test = MpiiDataset(test_path_corrupted, test_path_clean, test_path_MDSR, test_list_file,
                                    min_window_size=3, transform=composed, is_train=False, require_seqid=True)

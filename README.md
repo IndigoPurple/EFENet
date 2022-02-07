@@ -11,15 +11,78 @@ In this repository we provide code of the paper:
 </p>
 
 # Usage
-1. Run `train.sh` for EFENet training.
-2. Run `test.sh` for EFENet testing.
-3. Pretrained model is currently available at Baidu netdisk: 
+0. For pre-requisites, run:
 ```
-link：https://pan.baidu.com/s/1xK_YR9yYCyXncgDkTu3Obg 
+conda env create -f environment.yml
+conda activate efenet
+```
+1. For EFENet training, run:
+```
+sh train.sh
+```
+or
+```
+python train_efenet_vimeo.py  \
+--dataset demo   \
+--display 100 \
+--batch_size 1  \
+--step_size 50000 \
+--gamma 0.1 \
+--loss CharbonnierLoss \
+--optim Adam \
+--lr 0.00001  \
+--checkpoints_dir ./checkpoints/ \
+--frame_num 7 \
+--checkpoint_file ./pretrained/CP10000.pth \
+--with_GAN_loss 0 \
+--img_save_path result/ \
+--net_type multiflowfusion5 \
+--pretrained 1 \
+--gpu_id 0 
+```
+2. For EFENet testing, run:
+```
+sh test.sh
+```
+or
+```
+python train_efenet_vimeo.py  \
+--dataset demo   \
+--mode test \
+--display 100 \
+--batch_size 1  \
+--step_size 50000 \
+--gamma 0.1 \
+--loss CharbonnierLoss \
+--optim Adam \
+--lr 0.00001  \
+--checkpoints_dir ./checkpoints/ \
+--frame_num 7 \
+--checkpoint_file ./pretrained/CP10000.pth \
+--with_GAN_loss 0 \
+--img_save_path result/ \
+--net_type multiflowfusion5 \
+--pretrained 0 \
+--gpu_id 0
+```
+3. Pretrained model is currently available at Google Drive and Baidu Netdisk, download the `CP10000.pth` and put it in the `pretrained` folder: 
+```
+# Google Drive
+https://drive.google.com/file/d/1m89rHR5IiFi5hg50fZvkpgNtH-MBuW1j/view?usp=sharing
+
+# Baidu Netdisk
+link：https://pan.baidu.com/s/1BeAKAENf_TPPuUr-oRzajw 
 password: efen
 ```
-(I would also upload it to Google Drive soon.)
+4. If positive, you will get models in the `checkpoints/` folder when training and results in the `result/` folder when testing.
 
+# Dataset
+Dataset is stored in the folder `dataset/`, where subfolders `clean/`, `corrupted/`, `SISR/` contain ground truth HR images, corrupted LR images, upsampled LR images by interpolation (e.g., bicubic) or SISR methods.
+Images in `SISR/` could be as same as in `corrupted/`, though preprocessing by advanced SISR methods (e.g., MDSR) brings a small performance boost.
+
+`testlist.txt` and `trainlist.txt` could be modified for your experiment on other datasets. 
+
+This repo only provides a sample for demo purposes. 
 
 # Citation
 Cite our paper if you find it interesting!
