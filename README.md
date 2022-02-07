@@ -16,7 +16,16 @@ In this repository we provide code of the paper:
 conda env create -f environment.yml
 conda activate efenet
 ```
-1. For EFENet training, run:
+1. Pretrained model is currently available at Google Drive and Baidu Netdisk, download the `CP10000.pth` and put it in the `pretrained` folder: 
+```
+# Google Drive
+https://drive.google.com/file/d/1m89rHR5IiFi5hg50fZvkpgNtH-MBuW1j/view?usp=sharing
+
+# Baidu Netdisk
+link：https://pan.baidu.com/s/1BeAKAENf_TPPuUr-oRzajw 
+password: efen
+```
+2. For EFENet training, run:
 ```
 sh train.sh
 ```
@@ -40,7 +49,7 @@ python train_efenet_vimeo.py  \
 --pretrained 1 \
 --gpu_id 0 
 ```
-2. For EFENet testing, run:
+3. For EFENet testing, run:
 ```
 sh test.sh
 ```
@@ -65,15 +74,7 @@ python train_efenet_vimeo.py  \
 --pretrained 0 \
 --gpu_id 0
 ```
-3. Pretrained model is currently available at Google Drive and Baidu Netdisk, download the `CP10000.pth` and put it in the `pretrained` folder: 
-```
-# Google Drive
-https://drive.google.com/file/d/1m89rHR5IiFi5hg50fZvkpgNtH-MBuW1j/view?usp=sharing
 
-# Baidu Netdisk
-link：https://pan.baidu.com/s/1BeAKAENf_TPPuUr-oRzajw 
-password: efen
-```
 4. If positive, you will get models in the `checkpoints/` folder when training and results in the `result/` folder when testing.
 
 # Dataset
