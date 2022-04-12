@@ -16,7 +16,7 @@ In this repository we provide code of the paper:
 conda env create -f environment.yml
 conda activate efenet
 ```
-1. Pretrained model is currently available at Google Drive and Baidu Netdisk, download the `CP10000.pth` and put it in the `pretrained` folder. (This pretrained model only uses an training sample for demo purpose. If you want to train your own model, please prepare your own training set.): 
+1. Pretrained model is currently available at Google Drive and Baidu Netdisk, download the `CP10000.pth` and put it in the `pretrained` folder. (**This pretrained model only uses one training sample for demo purpose. If you want to train your own model, please prepare your own training set.**): 
 ```
 # Google Drive
 https://drive.google.com/file/d/1m89rHR5IiFi5hg50fZvkpgNtH-MBuW1j/view?usp=sharing
